@@ -8,7 +8,7 @@ let limit=pageSize;
 const count=document.querySelector('#count');
 const options=[...pref.options];
 const normalize=s=>s.normalize('NFKC').toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
-const labels=cards.map(card=>normalize(card.textContent));
+const labels=cards.map(card=>normalize([...card.querySelectorAll('.place, small, h3, .shop')].map(field=>field.textContent).join(' ')));
 function update(){
   const words=normalize(q.value).trim().split(/\s+/).filter(Boolean);
   let found=0;
