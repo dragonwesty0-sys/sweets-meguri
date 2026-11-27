@@ -44,3 +44,11 @@ form.hidden=false;
 update();
 
 for(const img of document.querySelectorAll('.sweet-photo img')){const fallback=()=>{const box=document.createElement('div');box.className='no-photo';box.setAttribute('role','img');box.setAttribute('aria-label','画像なし');box.textContent='NO IMAGE';img.closest('figure')?.replaceWith(box);};img.addEventListener('error',fallback);if(img.complete&&!img.naturalWidth)fallback();}
+
+if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+ const intro=document.createElement('div');intro.className='sweets-intro';intro.setAttribute('aria-hidden','true');
+ const title=document.createElement('div');title.className='intro-title';title.textContent='おやつ巡り';intro.append(title);
+ const sweets=['🍩','🍪','🍬','🍰','🍡','🧁','🍫','🍮'];
+ for(let i=0;i<32;i++){const candy=document.createElement('span');candy.className='intro-candy';candy.textContent=sweets[i%sweets.length];const angle=i*Math.PI*2/32;const radius=.55+(i%4)*.14;candy.style.setProperty('--x',(Math.cos(angle)*radius*48).toFixed(2)+'vw');candy.style.setProperty('--y',(Math.sin(angle)*radius*48).toFixed(2)+'vh');candy.style.setProperty('--spin',((i%2?1:-1)*(90+i*13))+'deg');candy.style.setProperty('--delay',(.12+(i%4)*.12)+'s');intro.append(candy);}
+ document.body.append(intro);setTimeout(()=>intro.remove(),3000);
+}
