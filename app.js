@@ -5,11 +5,14 @@ const reset=document.querySelector('#reset');
 const more=document.querySelector('#more');
 const pageSize=28;
 let limit=pageSize;
+let searched=false;
 const count=document.querySelector('#count');
 const options=[...pref.options];
 const normalize=s=>s.normalize('NFKC').toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
 const labels=cards.map(card=>normalize([...card.querySelectorAll('.place, small, h3, .shop')].map(field=>field.textContent).join(' ')));
 function update(){
+  document.querySelector("#grid").hidden=!searched;
+  if(!searched){count.textContent="地域やキーワードを選んで検索してください";more.hidden=true;reset.hidden=![q,region,pref,genre].some(field=>field.value);return;}
   const words=normalize(q.value).trim().split(/\s+/).filter(Boolean);
   let found=0;
   cards.forEach((card,i)=>{
@@ -28,9 +31,9 @@ function updateOptions(){
   pref.replaceChildren(...available);
   pref.value=available.some(option=>option.value===selected)?selected:'';
 }
-form.addEventListener('input',event=>{limit=pageSize;if(event.target===region)updateOptions();update();});
-form.addEventListener('submit',event=>event.preventDefault());
-reset.addEventListener('click',()=>{limit=pageSize;form.reset();updateOptions();update();q.focus();});
+form.addEventListener('input',event=>{limit=pageSize;if(event.target===region)updateOptions();searched=false;update();});
+form.addEventListener('submit',event=>{event.preventDefault();searched=true;limit=pageSize;update();});
+reset.addEventListener('click',()=>{limit=pageSize;form.reset();searched=false;updateOptions();update();q.focus();});
 more.addEventListener('click',()=>{
   const previous=limit;
   limit+=pageSize;
@@ -39,3 +42,5 @@ more.addEventListener('click',()=>{
 });
 form.hidden=false;
 update();
+
+for(const img of document.querySelectorAll('.sweet-photo img')){const fallback=()=>{const box=document.createElement('div');box.className='no-photo';box.setAttribute('role','img');box.setAttribute('aria-label','画像なし');box.textContent='NO IMAGE';img.closest('figure')?.replaceWith(box);};img.addEventListener('error',fallback);if(img.complete&&!img.naturalWidth)fallback();}
